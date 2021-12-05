@@ -1,4 +1,4 @@
-FROM docker.io/tiredofit/alpine:3.12
+FROM docker.io/tiredofit/alpine:3.15
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Nginx Version Number
@@ -118,6 +118,8 @@ RUN set -x && \
     mkdir -p /usr/src/nginx && \
     curl -sSL http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar xvfz - --strip 1 -C /usr/src/nginx && \
     cd /usr/src/nginx && \
+    ## Patch to subtract a connection integer when calling stub_status for accurate reporting
+    sed -i "/return ngx_http_output_filter(r, &out);/a \ \ \ \ \ (void) ngx_atomic_fetch_add(ngx_stat_requests, -1);" /usr/src/nginx/src/http/modules/ngx_http_stub_status_module.c && \
     ./configure $CONFIG --with-debug && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     mv objs/nginx objs/nginx-debug && \

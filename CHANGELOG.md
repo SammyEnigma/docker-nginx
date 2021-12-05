@@ -1,3 +1,9 @@
+## 5.16.0 2021-12-04 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add Patch to subtract Connection request value from stub_status for accurate reporting
+
+
 ## 5.15.3 2021-11-30 <dave at tiredofit dot ca>
 
    ### Changed

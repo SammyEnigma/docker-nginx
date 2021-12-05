@@ -117,6 +117,8 @@ RUN set -x && \
     mkdir -p /usr/src/nginx && \
     curl -sSLk http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar xvfz - --strip 1 -C /usr/src/nginx && \
     cd /usr/src/nginx && \
+    ## Patch to subtract a connection integer when calling stub_status for accurate reporting
+    sed -i "/return ngx_http_output_filter(r, &out);/a \ \ \ \ \ (void) ngx_atomic_fetch_add(ngx_stat_requests, -1);" /usr/src/nginx/src/http/modules/ngx_http_stub_status_module.c && \
     ./configure $CONFIG && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
